@@ -1,0 +1,15 @@
+{
+  "name": "html-cleaner",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build ./src/script.ts --outfile ./dist/script.js --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

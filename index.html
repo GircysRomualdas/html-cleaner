@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HTML Cleaner</title>
+        <link rel="stylesheet" href="src/style.css" />
+        <script src="dist/script.js" defer></script>
+    </head>
+    <body>
+        <h1>HTML Cleaner</h1>
+        <div>
+            <p>Raw HTML</p>
+            <textarea
+                id="input-html"
+                placeholder="Paste messy HTML here..."
+            ></textarea>
+            <button id="clean-button">Clean HTML</button>
+        </div>
+
+        <div>
+            <p>Clean HTML</p>
+            <textarea
+                id="output-html"
+                readonly
+                placeholder="Cleaned content will appear here..."
+            ></textarea>
+        </div>
+    </body>
+</html>
