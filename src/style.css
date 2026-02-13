@@ -1,7 +1,43 @@
+:root {
+  --first-color: #ececec;
+  --second-color: #9fd3c7;
+  --third-color: #385170;
+  --fourth-color: #142d4c;
+}
+
 body {
-    background-color: #f4f7f6;
+    background-color: var(--first-color);
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 h1 {
     text-align: center;
+}
+
+button {
+    background: var(--third-color);
+    color: var(--second-color);
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+button:hover {
+    background: var(--fourth-color);
+}
+
+textarea {
+    width: 95%;
+    height: 700px;
+    border: 1px solid var(--third-color);
+    border-radius: 4px;
+    font-size: 16px;
+    resize: none;
+    padding: 12px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: auto auto;
 }
