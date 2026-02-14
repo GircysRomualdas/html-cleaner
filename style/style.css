@@ -8,6 +8,8 @@
 body {
     background-color: var(--first-color);
     font-family: Arial, Helvetica, sans-serif;
+    margin-left: 100px;
+    margin-right: 100px;
 }
 
 h1 {
@@ -39,5 +41,16 @@ textarea {
 
 .container {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
+}
+
+iframe { 
+    width: 99%; 
+    height: 700px;
+    margin: 3px;
+    padding: 3px;
+    border: 1px solid var(--third-color);
+    border-radius: 4px;
+    background-color: white;
+    
 }
