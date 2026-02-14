@@ -1,12 +1,12 @@
 import TurndownService from "turndown";
 import { marked } from "marked";
 
+const turndownService = new TurndownService();
+
 export function convertHTMLToMarkdown(html: string): string {
-    const turndownService = new TurndownService();
     return turndownService.turndown(html);
 }
 
-export function convertMarkdownToHTML(markdown: string): string {
-    const html = marked(markdown) as string;
-    return html;
+export async function convertMarkdownToHTML(markdown: string): Promise<string> {
+    return await marked(markdown);
 }

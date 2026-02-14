@@ -7,7 +7,7 @@ const btnClean = document.getElementById("btn-clean");
 btnClean?.addEventListener("click", handlePurifyRawHTML);
 
 const btnMarkdown = document.getElementById("btn-markdown");
-btnMarkdown?.addEventListener("click", handleConvertHTMLToMarkdown);
+btnMarkdown?.addEventListener("click", async () => { await handleConvertHTMLToMarkdown(); });
 
 const btnFormat = document.getElementById("btn-format");
 btnFormat?.addEventListener("click", handleFormatHTML);
@@ -16,7 +16,7 @@ const btnCompress = document.getElementById("btn-compress");
 btnCompress?.addEventListener("click", handleCompressHTML);
 
 const textareaMarkdown = document.getElementById("textarea-markdown") as HTMLTextAreaElement | null;
-textareaMarkdown?.addEventListener("input", () => { updatePreviewMarkdown(textareaMarkdown); });
+textareaMarkdown?.addEventListener("input", async () => { await updatePreviewMarkdown(textareaMarkdown); });
 
 const textareaCleanHTML = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
 textareaCleanHTML?.addEventListener("input", () => { updatePreviewHTML(textareaCleanHTML); });
@@ -31,18 +31,18 @@ function updatePreviewHTML(cleanHTMLArea: HTMLTextAreaElement): void {
     previewHTMLFrame.srcdoc = cleanHTMLArea.value;
 }
 
-function updatePreviewMarkdown(markdownArea: HTMLTextAreaElement): void {
+async function updatePreviewMarkdown(markdownArea: HTMLTextAreaElement): Promise<void> {
     const previewMarkdownFrame = document.getElementById("iframe-preview-markdown") as HTMLIFrameElement | null;
     if (!previewMarkdownFrame) {
         console.error("Missing element");
         return;
     } 
 
-    const html = convertMarkdownToHTML(markdownArea.value);
+    const html = await convertMarkdownToHTML(markdownArea.value);
     previewMarkdownFrame.srcdoc = html;
 }
 
-function handleConvertHTMLToMarkdown(): void {
+async function handleConvertHTMLToMarkdown(): Promise<void> {
     const markdownArea = document.getElementById("textarea-markdown") as HTMLTextAreaElement | null;
     const cleanHTMLArea = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
     if (!markdownArea || !cleanHTMLArea) {
@@ -51,7 +51,7 @@ function handleConvertHTMLToMarkdown(): void {
     } 
 
     markdownArea.value = convertHTMLToMarkdown(cleanHTMLArea.value); 
-    updatePreviewMarkdown(markdownArea);
+    await updatePreviewMarkdown(markdownArea);
 }
 
 function updateOutputHTML(htmlString: string): void {
