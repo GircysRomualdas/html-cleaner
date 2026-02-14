@@ -1,5 +1,5 @@
 import { cleanHTML } from "./cleaner";
-import { compressHTML } from "./formatters";
+import { compressHTML, formatHTML } from "./formatters";
 import { convertHTMLToMarkdown, convertMarkdownToHTML } from "./markdown";
 
 
@@ -73,11 +73,7 @@ function handleFormatHTML() {
         return;
     } 
 
-    const div = document.createElement("div");
-    div.innerHTML = cleanHTMLArea.value;
-    let formatted = div.innerHTML;
-    formatted = formatted.replace(/></g, '>\n<');
-    updateOutputHTML(formatted);
+    updateOutputHTML(formatHTML(cleanHTMLArea.value));
 }
 
 
