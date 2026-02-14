@@ -13,22 +13,30 @@ export function cleanHTML(html: string): string {
 
 function removeAttributes(doc: HTMLDocument): void {
     const elements = doc.querySelectorAll("*");
+    const protectedAttributes = new Set(["href", "src", "alt", "title"]);
 
-    elements.forEach((element) => {
-        Array.from(element.attributes).forEach((attribute) => {
+    for (const element of elements) {
+        for (const attribute of Array.from(element.attributes)) {
+            if (protectedAttributes.has(attribute.name)) {
+                continue;
+            }
             element.removeAttribute(attribute.name);
-        });
-    });
+        }
+    }
 }
 
 function removeEmptyElements(doc: HTMLDocument): void {
-    const elements = doc.querySelectorAll("*");
+    const elements = Array.from(doc.querySelectorAll("*")).reverse();
+    const voidTags = new Set(["IMG", "BR", "HR", "INPUT"]);
 
-    elements.forEach((element) => {
-        if (element.textContent?.trim() === "") {
+    for (const element of elements) {
+        if (voidTags.has(element.tagName)) {
+            continue;
+        }
+        if (element.textContent?.trim() === "" && element.children.length === 0) {
             element.remove();
         }
-    });
+    }
 }
 
 function removeUselessElements(doc: HTMLDocument): void {
@@ -39,7 +47,7 @@ function removeUselessElements(doc: HTMLDocument): void {
     ];
     const elements = doc.querySelectorAll(uselessTags.join(","));
 
-    elements.forEach((element) => {
+    for (const element of elements) {
         element.remove();
-    });
+    }
 }
