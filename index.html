@@ -1,48 +1,54 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>HTML Cleaner</title>
-        <link rel="stylesheet" href="style/style.css" />
-        <script src="dist/script.js" defer></script>
-    </head>
-    <body>
-        <h1>HTML Cleaner</h1>
-        <div class="container">
-            <div>
-                <p>Raw HTML</p>
-                <textarea
-                    id="textarea-raw-html"
-                    placeholder="Paste messy HTML here..."
-                ></textarea>
-                <button id="btn-clean">Clean HTML</button>
-            </div>
-            <div>
-                <p>Clean HTML</p>
-                <textarea
-                    id="textarea-clean-html"
-                    placeholder="Cleaned content will appear here..."
-                ></textarea>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Cleaner</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <script src="dist/script.js" defer></script>
+</head>
+<body>
+    <h1>HTML Cleaner</h1>
+    <div class="container">
+
+    <section class="column editor">
+        <h2>Raw HTML</h2>
+        <textarea id="textarea-raw-html"></textarea>
+        <div class="buttons">
+            <button id="btn-clean">Clean HTML</button>
+        </div>
+    </section>
+
+    <section class="column">
+        <div class="editor">
+            <h2>Clean HTML</h2>
+            <textarea id="textarea-clean-html"></textarea>
+            <div class="buttons">
                 <button id="btn-format">Format</button>
                 <button id="btn-compress">Compress</button>
-                <button id="btn-markdown">Convert to markdown</button>
-            </div>
-            <div>
-                <p>Markdown</p>
-                <textarea
-                    id="textarea-markdown"
-                    placeholder="Cleaned content will appear here..."
-                ></textarea>
-            </div>
-            <div>
-                <p>Preview HTML</p>
-                <iframe id="iframe-preview-html"></iframe>
-            </div>
-            <div>
-                <p>Preview Markdown</p>
-                <iframe id="iframe-preview-markdown"></iframe>
+                <button id="btn-markdown">Convert to Markdown</button>
             </div>
         </div>
-    </body>
+
+        <div class="preview">
+            <h2>Preview HTML</h2>
+            <iframe id="iframe-preview-html"></iframe>
+        </div>
+    </section>
+
+    <section class="column">
+        <div class="editor">
+            <h2>Markdown</h2>
+            <textarea id="textarea-markdown"></textarea>
+        </div>
+
+        <div class="preview">
+            <h2>Preview Markdown</h2>
+            <iframe id="iframe-preview-markdown"></iframe>
+        </div>
+    </section>
+
+</div>
+
+</body>
 </html>

@@ -1,55 +1,97 @@
 :root {
-  --first-color: #ececec;
-  --second-color: #9fd3c7;
-  --third-color: #385170;
-  --fourth-color: #142d4c;
+    --first-color: #ececec;
+    --second-color: #9fd3c7;
+    --third-color: #385170;
+    --fourth-color: #142d4c;
 }
 
 body {
     background-color: var(--first-color);
     font-family: Arial, Helvetica, sans-serif;
-    margin-left: 100px;
-    margin-right: 100px;
+    margin: 20px 100px;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
+    margin-bottom: 10px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.editor,
+.preview {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    min-height: 45vh;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+textarea,
+iframe {
+    flex: 1;
+    width: 100%;
+    border: 3px solid var(--third-color);
+    border-radius: 4px;
+    padding: 12px;
+    resize: none;
+    overflow: auto;
+    background-color: white;
+}
+
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 button {
     background: var(--third-color);
-    color: var(--second-color);
-    padding: 10px 16px;
+    color: white;
+    padding: 8px 16px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 5px;
 }
 
 button:hover {
     background: var(--fourth-color);
 }
 
-textarea {
-    width: 95%;
-    height: 700px;
-    border: 1px solid var(--third-color);
-    border-radius: 4px;
-    font-size: 16px;
-    resize: none;
-    padding: 12px;
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: auto auto auto;
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-iframe { 
-    width: 99%; 
-    height: 700px;
-    margin: 3px;
-    padding: 3px;
-    border: 1px solid var(--third-color);
-    border-radius: 4px;
-    background-color: white;
+@media (max-width: 800px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
+
