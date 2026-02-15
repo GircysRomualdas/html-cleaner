@@ -1,4 +1,4 @@
-import { compressHTML } from "./formatters";
+import { formatHTML, compressHTML } from "./formatters";
 
 export function cleanHTML(html: string): string {
     const parser = new DOMParser();
@@ -8,7 +8,7 @@ export function cleanHTML(html: string): string {
     removeUselessElements(doc);
     removeEmptyElements(doc);
 
-    return compressHTML(doc.body.innerHTML);
+    return formatHTML(compressHTML(doc.body.innerHTML));
 }
 
 function removeAttributes(doc: HTMLDocument): void {
