@@ -27,7 +27,7 @@ h2 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  height: 80vh;
+  height: 90vh;
 }
 
 .column {
@@ -37,12 +37,10 @@ h2 {
   min-height: 0;
 }
 
-/* First column - Raw HTML full height */
 .column.editor {
   gap: 10px;
 }
 
-/* Editor and preview boxes */
 .editor,
 .preview {
   background-color: white;
@@ -55,7 +53,6 @@ h2 {
   min-height: 0;
 }
 
-/* CodeMirror editor containers */
 .code-editor {
   flex: 1;
   border: 3px solid var(--third-color);
@@ -74,12 +71,10 @@ h2 {
   overflow: auto;
 }
 
-/* Raw HTML editor - full height */
 #editor-raw-html {
   flex: 1;
 }
 
-/* Iframes */
 iframe {
   flex: 1;
   width: 100%;
@@ -91,7 +86,6 @@ iframe {
   min-height: 0;
 }
 
-/* Buttons */
 .buttons {
   display: flex;
   gap: 10px;
@@ -112,7 +106,6 @@ button:hover {
   background: var(--fourth-color);
 }
 
-/* Responsive */
 @media (max-width: 1200px) {
   .container {
     grid-template-columns: repeat(2, 1fr);
