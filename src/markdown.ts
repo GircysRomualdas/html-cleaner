@@ -4,9 +4,9 @@ import { marked } from "marked";
 const turndownService = new TurndownService();
 
 export function convertHTMLToMarkdown(html: string): string {
-    return turndownService.turndown(html);
+  return turndownService.turndown(html);
 }
 
 export async function convertMarkdownToHTML(markdown: string): Promise<string> {
-    return await marked(markdown);
+  return await marked(markdown);
 }

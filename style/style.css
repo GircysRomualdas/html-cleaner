@@ -1,97 +1,135 @@
 :root {
-    --first-color: #ececec;
-    --second-color: #9fd3c7;
-    --third-color: #385170;
-    --fourth-color: #142d4c;
+  --first-color: #ececec;
+  --second-color: #9fd3c7;
+  --third-color: #385170;
+  --fourth-color: #142d4c;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
-    background-color: var(--first-color);
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 20px 100px;
+  background-color: var(--first-color);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20px 100px;
 }
 
-h1, h2 {
-    text-align: center;
-    margin-bottom: 10px;
+h1,
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-@media (max-width: 900px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-}
-
-.editor,
-.preview {
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    min-height: 45vh;
-}
-
-*, *::before, *::after {
-    box-sizing: border-box;
-}
-
-textarea,
-iframe {
-    flex: 1;
-    width: 100%;
-    border: 3px solid var(--third-color);
-    border-radius: 4px;
-    padding: 12px;
-    resize: none;
-    overflow: auto;
-    background-color: white;
-}
-
-
-.buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-button {
-    background: var(--third-color);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: var(--fourth-color);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  height: 80vh;
 }
 
 .column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
 }
 
+/* First column - Raw HTML full height */
+.column.editor {
+  gap: 10px;
+}
+
+/* Editor and preview boxes */
+.editor,
+.preview {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* CodeMirror editor containers */
+.code-editor {
+  flex: 1;
+  border: 3px solid var(--third-color);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.code-editor .cm-editor {
+  height: 100%;
+}
+
+.code-editor .cm-scroller {
+  overflow: auto;
+}
+
+/* Raw HTML editor - full height */
+#editor-raw-html {
+  flex: 1;
+}
+
+/* Iframes */
+iframe {
+  flex: 1;
+  width: 100%;
+  border: 3px solid var(--third-color);
+  border-radius: 4px;
+  padding: 12px;
+  overflow: auto;
+  background-color: white;
+  min-height: 0;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  background: var(--third-color);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--fourth-color);
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
-    .container {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    height: auto;
+  }
+
+  .column {
+    min-height: 70vh;
+  }
 }
 
 @media (max-width: 800px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-}
+  .container {
+    grid-template-columns: 1fr;
+  }
 
+  body {
+    margin: 20px;
+  }
+}

@@ -1,13 +1,42 @@
 import { cleanHTML } from "./cleaner";
 import { compressHTML, formatHTML } from "./formatters";
 import { convertHTMLToMarkdown, convertMarkdownToHTML } from "./markdown";
+import {
+  createHTMLEditor,
+  setEditorContent,
+  createMarkdownEditor,
+} from "./editors";
 
+const rawHTMLContainer = document.getElementById("editor-raw-html");
+if (!rawHTMLContainer) {
+  throw new Error("Missing container");
+}
+const rawHTMLEditor = createHTMLEditor(rawHTMLContainer);
+
+const cleanHTMLContainer = document.getElementById("editor-clean-html");
+if (!cleanHTMLContainer) {
+  throw new Error("Missing container");
+}
+const cleanHTMLEditor = createHTMLEditor(cleanHTMLContainer, (content) => {
+  updatePreviewHTML(content);
+});
+
+const markdownContainer = document.getElementById("editor-markdown");
+if (!markdownContainer) {
+  throw new Error("Missing container");
+}
+const markdownEditor = createMarkdownEditor(
+  markdownContainer,
+  async (content) => {
+    await updatePreviewMarkdown(content);
+  },
+);
 
 const btnClean = document.getElementById("btn-clean");
 btnClean?.addEventListener("click", handlePurifyRawHTML);
 
 const btnMarkdown = document.getElementById("btn-markdown");
-btnMarkdown?.addEventListener("click", async () => { await handleConvertHTMLToMarkdown(); });
+btnMarkdown?.addEventListener("click", handleConvertHTMLToMarkdown);
 
 const btnFormat = document.getElementById("btn-format");
 btnFormat?.addEventListener("click", handleFormatHTML);
@@ -15,85 +44,53 @@ btnFormat?.addEventListener("click", handleFormatHTML);
 const btnCompress = document.getElementById("btn-compress");
 btnCompress?.addEventListener("click", handleCompressHTML);
 
-const textareaMarkdown = document.getElementById("textarea-markdown") as HTMLTextAreaElement | null;
-textareaMarkdown?.addEventListener("input", async () => { await updatePreviewMarkdown(textareaMarkdown); });
-
-const textareaCleanHTML = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
-textareaCleanHTML?.addEventListener("input", () => { updatePreviewHTML(textareaCleanHTML); });
-
-
-function updatePreviewHTML(cleanHTMLArea: HTMLTextAreaElement): void {
-    const previewHTMLFrame = document.getElementById("iframe-preview-html") as HTMLIFrameElement | null;
-    if (!previewHTMLFrame) {
-        console.error("Missing element");
-        return;
-    } 
-    previewHTMLFrame.srcdoc = cleanHTMLArea.value;
+function updatePreviewHTML(htmlString: string): void {
+  const previewHTMLFrame = document.getElementById(
+    "iframe-preview-html",
+  ) as HTMLIFrameElement | null;
+  if (!previewHTMLFrame) {
+    console.error("Missing element");
+    return;
+  }
+  previewHTMLFrame.srcdoc = htmlString;
 }
 
-async function updatePreviewMarkdown(markdownArea: HTMLTextAreaElement): Promise<void> {
-    const previewMarkdownFrame = document.getElementById("iframe-preview-markdown") as HTMLIFrameElement | null;
-    if (!previewMarkdownFrame) {
-        console.error("Missing element");
-        return;
-    } 
-
-    const html = await convertMarkdownToHTML(markdownArea.value);
-    previewMarkdownFrame.srcdoc = html;
+async function updatePreviewMarkdown(markdownString: string): Promise<void> {
+  const previewMarkdownFrame = document.getElementById(
+    "iframe-preview-markdown",
+  ) as HTMLIFrameElement | null;
+  if (!previewMarkdownFrame) {
+    console.error("Missing element");
+    return;
+  }
+  const html = await convertMarkdownToHTML(markdownString);
+  previewMarkdownFrame.srcdoc = html;
 }
 
 async function handleConvertHTMLToMarkdown(): Promise<void> {
-    const markdownArea = document.getElementById("textarea-markdown") as HTMLTextAreaElement | null;
-    const cleanHTMLArea = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
-    if (!markdownArea || !cleanHTMLArea) {
-        console.error("Missing element");
-        return;
-    } 
-
-    markdownArea.value = convertHTMLToMarkdown(cleanHTMLArea.value); 
-    await updatePreviewMarkdown(markdownArea);
+  const cleanHTML = cleanHTMLEditor.state.doc.toString();
+  const markdown = convertHTMLToMarkdown(cleanHTML);
+  setEditorContent(markdownEditor, markdown);
+  await updatePreviewMarkdown(markdown);
 }
 
 function updateOutputHTML(htmlString: string): void {
-    const previewHTMLFrame = document.getElementById("iframe-preview-html") as HTMLIFrameElement | null;
-    const cleanHTMLArea = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
-    if (!previewHTMLFrame || !cleanHTMLArea) {
-        console.error("Missing element");
-        return;
-    } 
-    cleanHTMLArea.value = htmlString;
-    previewHTMLFrame.srcdoc = cleanHTMLArea.value;
+  setEditorContent(cleanHTMLEditor, htmlString);
+  updatePreviewHTML(htmlString);
 }
 
-
-function handleFormatHTML() {
-    const cleanHTMLArea = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
-    if (!cleanHTMLArea) {
-        console.error("Missing element");
-        return;
-    } 
-
-    updateOutputHTML(formatHTML(cleanHTMLArea.value));
+function handleFormatHTML(): void {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(formatHTML(currentHTML));
 }
 
-
-function handleCompressHTML() {
-    const cleanHTMLArea = document.getElementById("textarea-clean-html") as HTMLTextAreaElement | null;
-    if (!cleanHTMLArea) {
-        console.error("Missing element");
-        return;
-    } 
-
-    updateOutputHTML(compressHTML(cleanHTMLArea.value));
+function handleCompressHTML(): void {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(compressHTML(currentHTML));
 }
 
-function handlePurifyRawHTML() {
-    const rawHTMLArea = document.getElementById("textarea-raw-html") as HTMLTextAreaElement | null;
-    if (!rawHTMLArea) {
-        console.error("Missing element");
-        return;
-    } 
-
-    const cleanedHTML = cleanHTML(rawHTMLArea.value);
-    updateOutputHTML(cleanedHTML);
+function handlePurifyRawHTML(): void {
+  const value = rawHTMLEditor.state.doc.toString();
+  const cleanedHTML = cleanHTML(value);
+  updateOutputHTML(cleanedHTML);
 }

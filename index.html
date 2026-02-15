@@ -1,54 +1,50 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HTML Cleaner</title>
     <link rel="stylesheet" href="style/style.css" />
     <script src="dist/script.js" defer></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>HTML Cleaner</h1>
     <div class="container">
-
-    <section class="column editor">
+      <section class="column editor">
         <h2>Raw HTML</h2>
-        <textarea id="textarea-raw-html"></textarea>
+        <div id="editor-raw-html" class="code-editor"></div>
         <div class="buttons">
-            <button id="btn-clean">Clean HTML</button>
+          <button id="btn-clean">Clean HTML</button>
         </div>
-    </section>
+      </section>
 
-    <section class="column">
+      <section class="column">
         <div class="editor">
-            <h2>Clean HTML</h2>
-            <textarea id="textarea-clean-html"></textarea>
-            <div class="buttons">
-                <button id="btn-format">Format</button>
-                <button id="btn-compress">Compress</button>
-                <button id="btn-markdown">Convert to Markdown</button>
-            </div>
+          <h2>Clean HTML</h2>
+          <div id="editor-clean-html" class="code-editor"></div>
+          <div class="buttons">
+            <button id="btn-format">Format</button>
+            <button id="btn-compress">Compress</button>
+            <button id="btn-markdown">Convert to Markdown</button>
+          </div>
+        </div>
+        <div class="preview">
+          <h2>Preview HTML</h2>
+          <iframe id="iframe-preview-html"></iframe>
+        </div>
+      </section>
+
+      <section class="column">
+        <div class="editor">
+          <h2>Markdown</h2>
+          <div id="editor-markdown" class="code-editor"></div>
         </div>
 
         <div class="preview">
-            <h2>Preview HTML</h2>
-            <iframe id="iframe-preview-html"></iframe>
+          <h2>Preview Markdown</h2>
+          <iframe id="iframe-preview-markdown"></iframe>
         </div>
-    </section>
-
-    <section class="column">
-        <div class="editor">
-            <h2>Markdown</h2>
-            <textarea id="textarea-markdown"></textarea>
-        </div>
-
-        <div class="preview">
-            <h2>Preview Markdown</h2>
-            <iframe id="iframe-preview-markdown"></iframe>
-        </div>
-    </section>
-
-</div>
-
-</body>
+      </section>
+    </div>
+  </body>
 </html>
