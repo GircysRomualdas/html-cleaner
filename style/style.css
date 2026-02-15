@@ -126,3 +126,15 @@ button:hover {
     margin: 20px;
   }
 }
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editor h2,
+.preview h2 {
+  text-align: left;
+  margin: 0;
+}

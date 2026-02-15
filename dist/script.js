@@ -33626,6 +33626,21 @@ function setEditorContent(editor, content2) {
   });
 }
 
+// src/utils.ts
+async function copyToClipboard(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const originalText = button.textContent;
+    button.textContent = "Copied!";
+    setTimeout(() => {
+      button.textContent = originalText;
+    }, 1500);
+  } catch (err) {
+    console.error("Failed to copy:", err);
+    button.textContent = "Failed";
+  }
+}
+
 // src/main.ts
 var rawHTMLContainer = document.getElementById("editor-raw-html");
 if (!rawHTMLContainer) {
@@ -33654,6 +33669,21 @@ var btnFormat = document.getElementById("btn-format");
 btnFormat?.addEventListener("click", handleFormatHTML);
 var btnCompress = document.getElementById("btn-compress");
 btnCompress?.addEventListener("click", handleCompressHTML);
+var btnCopyRawHTML = document.getElementById("btn-copy-html-raw");
+btnCopyRawHTML?.addEventListener("click", async () => {
+  const content2 = rawHTMLEditor.state.doc.toString();
+  await copyToClipboard(content2, btnCopyRawHTML);
+});
+var btnCopyCleanHTML = document.getElementById("btn-copy-html-clean");
+btnCopyCleanHTML?.addEventListener("click", async () => {
+  const content2 = cleanHTMLEditor.state.doc.toString();
+  await copyToClipboard(content2, btnCopyCleanHTML);
+});
+var btnCopyCleanMarkdown = document.getElementById("btn-copy-markdown");
+btnCopyCleanMarkdown?.addEventListener("click", async () => {
+  const content2 = markdownEditor.state.doc.toString();
+  await copyToClipboard(content2, btnCopyCleanMarkdown);
+});
 function updatePreviewHTML(htmlString) {
   const previewHTMLFrame = document.getElementById("iframe-preview-html");
   if (!previewHTMLFrame) {

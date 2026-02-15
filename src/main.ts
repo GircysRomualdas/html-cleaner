@@ -6,6 +6,7 @@ import {
   setEditorContent,
   createMarkdownEditor,
 } from "./editors";
+import { copyToClipboard } from "./utils";
 
 const rawHTMLContainer = document.getElementById("editor-raw-html");
 if (!rawHTMLContainer) {
@@ -43,6 +44,30 @@ btnFormat?.addEventListener("click", handleFormatHTML);
 
 const btnCompress = document.getElementById("btn-compress");
 btnCompress?.addEventListener("click", handleCompressHTML);
+
+const btnCopyRawHTML = document.getElementById(
+  "btn-copy-html-raw",
+) as HTMLButtonElement | null;
+btnCopyRawHTML?.addEventListener("click", async () => {
+  const content = rawHTMLEditor.state.doc.toString();
+  await copyToClipboard(content, btnCopyRawHTML);
+});
+
+const btnCopyCleanHTML = document.getElementById(
+  "btn-copy-html-clean",
+) as HTMLButtonElement | null;
+btnCopyCleanHTML?.addEventListener("click", async () => {
+  const content = cleanHTMLEditor.state.doc.toString();
+  await copyToClipboard(content, btnCopyCleanHTML);
+});
+
+const btnCopyCleanMarkdown = document.getElementById(
+  "btn-copy-markdown",
+) as HTMLButtonElement | null;
+btnCopyCleanMarkdown?.addEventListener("click", async () => {
+  const content = markdownEditor.state.doc.toString();
+  await copyToClipboard(content, btnCopyCleanMarkdown);
+});
 
 function updatePreviewHTML(htmlString: string): void {
   const previewHTMLFrame = document.getElementById(

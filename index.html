@@ -11,7 +11,10 @@
     <h1>HTML Cleaner</h1>
     <div class="container">
       <section class="column editor">
-        <h2>Raw HTML</h2>
+        <div class="column-header">
+          <h2>Raw HTML</h2>
+          <button id="btn-copy-html-raw">Copy</button>
+        </div>
         <div id="editor-raw-html" class="code-editor"></div>
         <div class="buttons">
           <button id="btn-clean">Clean HTML</button>
@@ -20,7 +23,10 @@
 
       <section class="column">
         <div class="editor">
-          <h2>Clean HTML</h2>
+          <div class="column-header">
+            <h2>Clean HTML</h2>
+            <button id="btn-copy-html-clean">Copy</button>
+          </div>
           <div id="editor-clean-html" class="code-editor"></div>
           <div class="buttons">
             <button id="btn-format">Format</button>
@@ -36,7 +42,10 @@
 
       <section class="column">
         <div class="editor">
-          <h2>Markdown</h2>
+          <div class="column-header">
+            <h2>Markdown</h2>
+            <button id="btn-copy-markdown">Copy</button>
+          </div>
           <div id="editor-markdown" class="code-editor"></div>
         </div>
 
