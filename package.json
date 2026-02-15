@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build ./src/main.ts --outfile ./dist/script.js --watch"
+    "build": "bun build ./src/main.ts --outfile ./dist/script.js",
+    "dev": "bun build ./src/main.ts --outfile ./dist/script.js --watch"
   },
   "devDependencies": {
     "@types/bun": "latest",
