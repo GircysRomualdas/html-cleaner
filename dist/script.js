@@ -33701,6 +33701,19 @@ btnClearMarkdown?.addEventListener("click", async () => {
   clearEditor(markdownEditor);
   await updatePreviewMarkdown("");
 });
+var btnToggleTheme = document.getElementById("btn-toggle-theme");
+btnToggleTheme?.addEventListener("click", () => {
+  document.documentElement.classList.toggle("dark");
+  const isDark = document.documentElement.classList.contains("dark");
+  btnToggleTheme.textContent = isDark ? "Light Mode" : "Dark Mode";
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+var savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark");
+  if (btnToggleTheme)
+    btnToggleTheme.textContent = "Light Mode";
+}
 async function handleConvertHTMLToMarkdown() {
   const cleanHTML2 = cleanHTMLEditor.state.doc.toString();
   const markdown2 = convertHTMLToMarkdown(cleanHTML2);

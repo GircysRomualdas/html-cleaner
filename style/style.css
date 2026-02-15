@@ -1,8 +1,27 @@
 :root {
-  --first-color: #ececec;
-  --second-color: #9fd3c7;
-  --third-color: #385170;
-  --fourth-color: #142d4c;
+  --bg-primary: #ececec;
+  --bg-secondary: #ffffff;
+  --bg-accent: #9fd3c7;
+  --text-primary: #142d4c;
+  --text-secondary: #385170;
+  --border-color: #385170;
+  --btn-bg: #385170;
+  --btn-bg-hover: #142d4c;
+  --btn-text: #ffffff;
+  --bg-iframe: #f5f5f5;
+}
+
+:root.dark {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-accent: #2d2d2d;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border-color: #3d3d3d;
+  --btn-bg: #0d7377;
+  --btn-bg-hover: #14a3a8;
+  --btn-text: #ffffff;
+  --bg-iframe: #f0f0f0;
 }
 
 *,
@@ -12,15 +31,28 @@
 }
 
 body {
-  background-color: var(--first-color);
+  background-color: var(--bg-primary);
   font-family: Arial, Helvetica, sans-serif;
   margin: 20px 100px;
+  color: var(--text-primary);
 }
 
 h1,
 h2 {
   text-align: center;
   margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
 }
 
 .container {
@@ -43,7 +75,7 @@ h2 {
 
 .editor,
 .preview {
-  background-color: white;
+  background-color: var(--bg-secondary);
   padding: 15px;
   border-radius: 8px;
   display: flex;
@@ -55,7 +87,7 @@ h2 {
 
 .code-editor {
   flex: 1;
-  border: 3px solid var(--third-color);
+  border: 3px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
   display: flex;
@@ -78,11 +110,11 @@ h2 {
 iframe {
   flex: 1;
   width: 100%;
-  border: 3px solid var(--third-color);
+  border: 3px solid var(--border-color);
   border-radius: 4px;
   padding: 12px;
   overflow: auto;
-  background-color: white;
+  background-color: var(--bg-iframe);
   min-height: 0;
 }
 
@@ -94,8 +126,8 @@ iframe {
 }
 
 button {
-  background: var(--third-color);
-  color: white;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   padding: 8px 16px;
   border: none;
   border-radius: 5px;
@@ -103,7 +135,24 @@ button {
 }
 
 button:hover {
-  background: var(--fourth-color);
+  background: var(--btn-bg-hover);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.editor h2,
+.preview h2 {
+  text-align: left;
+  margin: 0;
 }
 
 @media (max-width: 1200px) {
@@ -125,21 +174,4 @@ button:hover {
   body {
     margin: 20px;
   }
-}
-
-.column-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-buttons {
-  display: flex;
-  gap: 5px;
-}
-
-.editor h2,
-.preview h2 {
-  text-align: left;
-  margin: 0;
 }

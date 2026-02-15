@@ -87,6 +87,21 @@ btnClearMarkdown?.addEventListener("click", async () => {
   await updatePreviewMarkdown("");
 });
 
+// themes
+const btnToggleTheme = document.getElementById("btn-toggle-theme");
+btnToggleTheme?.addEventListener("click", () => {
+  document.documentElement.classList.toggle("dark");
+  const isDark = document.documentElement.classList.contains("dark");
+  btnToggleTheme.textContent = isDark ? "Light Mode" : "Dark Mode";
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.documentElement.classList.add("dark");
+  if (btnToggleTheme) btnToggleTheme.textContent = "Light Mode";
+}
+
 // handles
 async function handleConvertHTMLToMarkdown(): Promise<void> {
   const cleanHTML = cleanHTMLEditor.state.doc.toString();
