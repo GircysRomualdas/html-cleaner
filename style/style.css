@@ -133,6 +133,11 @@ button:hover {
   align-items: center;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 5px;
+}
+
 .editor h2,
 .preview h2 {
   text-align: left;

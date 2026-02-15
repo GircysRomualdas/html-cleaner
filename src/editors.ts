@@ -51,3 +51,7 @@ export function setEditorContent(editor: EditorView, content: string): void {
     },
   });
 }
+
+export function clearEditor(editor: EditorView): void {
+  setEditorContent(editor, "");
+}

@@ -5,6 +5,7 @@ import {
   createHTMLEditor,
   setEditorContent,
   createMarkdownEditor,
+  clearEditor,
 } from "./editors";
 import { copyToClipboard } from "./utils";
 
@@ -69,6 +70,53 @@ btnCopyCleanMarkdown?.addEventListener("click", async () => {
   await copyToClipboard(content, btnCopyCleanMarkdown);
 });
 
+const btnClearRawHTML = document.getElementById("btn-clear-html-raw");
+btnClearRawHTML?.addEventListener("click", () => {
+  clearEditor(rawHTMLEditor);
+});
+
+const btnClearCleanHTML = document.getElementById("btn-clear-html-clean");
+btnClearCleanHTML?.addEventListener("click", () => {
+  clearEditor(cleanHTMLEditor);
+  updatePreviewHTML("");
+});
+
+const btnClearMarkdown = document.getElementById("btn-clear-markdown");
+btnClearMarkdown?.addEventListener("click", async () => {
+  clearEditor(markdownEditor);
+  await updatePreviewMarkdown("");
+});
+
+// handles
+async function handleConvertHTMLToMarkdown(): Promise<void> {
+  const cleanHTML = cleanHTMLEditor.state.doc.toString();
+  const markdown = convertHTMLToMarkdown(cleanHTML);
+  setEditorContent(markdownEditor, markdown);
+  await updatePreviewMarkdown(markdown);
+}
+
+function handleFormatHTML(): void {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(formatHTML(currentHTML));
+}
+
+function handleCompressHTML(): void {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(compressHTML(currentHTML));
+}
+
+function handlePurifyRawHTML(): void {
+  const value = rawHTMLEditor.state.doc.toString();
+  const cleanedHTML = cleanHTML(value);
+  updateOutputHTML(cleanedHTML);
+}
+
+// updates
+function updateOutputHTML(htmlString: string): void {
+  setEditorContent(cleanHTMLEditor, htmlString);
+  updatePreviewHTML(htmlString);
+}
+
 function updatePreviewHTML(htmlString: string): void {
   const previewHTMLFrame = document.getElementById(
     "iframe-preview-html",
@@ -90,32 +138,4 @@ async function updatePreviewMarkdown(markdownString: string): Promise<void> {
   }
   const html = await convertMarkdownToHTML(markdownString);
   previewMarkdownFrame.srcdoc = html;
-}
-
-async function handleConvertHTMLToMarkdown(): Promise<void> {
-  const cleanHTML = cleanHTMLEditor.state.doc.toString();
-  const markdown = convertHTMLToMarkdown(cleanHTML);
-  setEditorContent(markdownEditor, markdown);
-  await updatePreviewMarkdown(markdown);
-}
-
-function updateOutputHTML(htmlString: string): void {
-  setEditorContent(cleanHTMLEditor, htmlString);
-  updatePreviewHTML(htmlString);
-}
-
-function handleFormatHTML(): void {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(formatHTML(currentHTML));
-}
-
-function handleCompressHTML(): void {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(compressHTML(currentHTML));
-}
-
-function handlePurifyRawHTML(): void {
-  const value = rawHTMLEditor.state.doc.toString();
-  const cleanedHTML = cleanHTML(value);
-  updateOutputHTML(cleanedHTML);
 }

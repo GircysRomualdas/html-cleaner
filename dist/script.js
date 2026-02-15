@@ -33625,6 +33625,9 @@ function setEditorContent(editor, content2) {
     }
   });
 }
+function clearEditor(editor) {
+  setEditorContent(editor, "");
+}
 
 // src/utils.ts
 async function copyToClipboard(text, button) {
@@ -33684,6 +33687,43 @@ btnCopyCleanMarkdown?.addEventListener("click", async () => {
   const content2 = markdownEditor.state.doc.toString();
   await copyToClipboard(content2, btnCopyCleanMarkdown);
 });
+var btnClearRawHTML = document.getElementById("btn-clear-html-raw");
+btnClearRawHTML?.addEventListener("click", () => {
+  clearEditor(rawHTMLEditor);
+});
+var btnClearCleanHTML = document.getElementById("btn-clear-html-clean");
+btnClearCleanHTML?.addEventListener("click", () => {
+  clearEditor(cleanHTMLEditor);
+  updatePreviewHTML("");
+});
+var btnClearMarkdown = document.getElementById("btn-clear-markdown");
+btnClearMarkdown?.addEventListener("click", async () => {
+  clearEditor(markdownEditor);
+  await updatePreviewMarkdown("");
+});
+async function handleConvertHTMLToMarkdown() {
+  const cleanHTML2 = cleanHTMLEditor.state.doc.toString();
+  const markdown2 = convertHTMLToMarkdown(cleanHTML2);
+  setEditorContent(markdownEditor, markdown2);
+  await updatePreviewMarkdown(markdown2);
+}
+function handleFormatHTML() {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(formatHTML(currentHTML));
+}
+function handleCompressHTML() {
+  const currentHTML = cleanHTMLEditor.state.doc.toString();
+  updateOutputHTML(compressHTML(currentHTML));
+}
+function handlePurifyRawHTML() {
+  const value = rawHTMLEditor.state.doc.toString();
+  const cleanedHTML = cleanHTML(value);
+  updateOutputHTML(cleanedHTML);
+}
+function updateOutputHTML(htmlString) {
+  setEditorContent(cleanHTMLEditor, htmlString);
+  updatePreviewHTML(htmlString);
+}
 function updatePreviewHTML(htmlString) {
   const previewHTMLFrame = document.getElementById("iframe-preview-html");
   if (!previewHTMLFrame) {
@@ -33700,27 +33740,4 @@ async function updatePreviewMarkdown(markdownString) {
   }
   const html2 = await convertMarkdownToHTML(markdownString);
   previewMarkdownFrame.srcdoc = html2;
-}
-async function handleConvertHTMLToMarkdown() {
-  const cleanHTML2 = cleanHTMLEditor.state.doc.toString();
-  const markdown2 = convertHTMLToMarkdown(cleanHTML2);
-  setEditorContent(markdownEditor, markdown2);
-  await updatePreviewMarkdown(markdown2);
-}
-function updateOutputHTML(htmlString) {
-  setEditorContent(cleanHTMLEditor, htmlString);
-  updatePreviewHTML(htmlString);
-}
-function handleFormatHTML() {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(formatHTML(currentHTML));
-}
-function handleCompressHTML() {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(compressHTML(currentHTML));
-}
-function handlePurifyRawHTML() {
-  const value = rawHTMLEditor.state.doc.toString();
-  const cleanedHTML = cleanHTML(value);
-  updateOutputHTML(cleanedHTML);
 }
