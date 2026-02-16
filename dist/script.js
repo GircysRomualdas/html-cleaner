@@ -31468,10 +31468,12 @@ async function copyToClipboard(text, button) {
     await navigator.clipboard.writeText(text);
     const originalText = button.textContent;
     button.textContent = "Copied!";
+    showNotification("Successfully copied", "success");
     setTimeout(() => {
       button.textContent = originalText;
     }, 1500);
   } catch (err) {
+    showNotification("Failed to copy", "error");
     console.error("Failed to copy:", err);
     button.textContent = "Failed";
   }
@@ -31481,6 +31483,7 @@ function toggleTheme(btnTheme) {
   const isDark = document.documentElement.classList.contains("dark");
   btnTheme.textContent = isDark ? "Light Mode" : "Dark Mode";
   localStorage.setItem("theme", isDark ? "dark" : "light");
+  showNotification(`Theme set to ${isDark ? "dark" : "light"} mode`, "success");
 }
 function loadTheme(btnTheme) {
   const savedTheme = localStorage.getItem("theme");
@@ -31493,9 +31496,19 @@ function loadTheme(btnTheme) {
 function getElement(id2) {
   const element = document.getElementById(id2);
   if (!element) {
+    showNotification(`Missing element: ${id2}`, "error");
     throw new Error(`Missing element: ${id2}`);
   }
   return element;
+}
+function showNotification(message, type = "success") {
+  const notification = document.createElement("div");
+  notification.className = `notification notification-${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 
 // node_modules/turndown/lib/turndown.browser.es.js
@@ -33673,22 +33686,58 @@ function removeUselessElements(doc2) {
 
 // src/handlers.ts
 async function handleConvertHTMLToMarkdown(cleanHTMLEditor, markdownEditor, previewFrameMarkdown) {
-  const cleanHTML2 = cleanHTMLEditor.state.doc.toString();
-  const markdown2 = convertHTMLToMarkdown(cleanHTML2);
-  await updateMarkdown(markdown2, markdownEditor, previewFrameMarkdown);
+  try {
+    const cleanHTML2 = cleanHTMLEditor.state.doc.toString();
+    if (cleanHTML2.trim() === "") {
+      showNotification("clean HTML is empty", "warning");
+      return;
+    }
+    const markdown2 = convertHTMLToMarkdown(cleanHTML2);
+    await updateMarkdown(markdown2, markdownEditor, previewFrameMarkdown);
+    showNotification("successfully convert HTML to Markdown", "success");
+  } catch (error) {
+    showNotification("Faild to convert HTML to markdown", "error");
+  }
 }
 function handleFormatHTML(cleanHTMLEditor, previewFrameHTML) {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateCleanHTML(formatHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
+  try {
+    const currentHTML = cleanHTMLEditor.state.doc.toString();
+    if (currentHTML.trim() === "") {
+      showNotification("clean HTML is empty", "warning");
+      return;
+    }
+    updateCleanHTML(formatHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
+    showNotification("successfully format HTML", "success");
+  } catch (error) {
+    showNotification("Faild to format HTML", "error");
+  }
 }
 function handleCompressHTML(cleanHTMLEditor, previewFrameHTML) {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateCleanHTML(compressHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
+  try {
+    const currentHTML = cleanHTMLEditor.state.doc.toString();
+    if (currentHTML.trim() === "") {
+      showNotification("clean HTML is empty", "warning");
+      return;
+    }
+    updateCleanHTML(compressHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
+    showNotification("successfully compressed HTML", "success");
+  } catch (error) {
+    showNotification("Faild to compress HTML", "error");
+  }
 }
 function handlePurifyRawHTML(rawHTMLEditor, cleanHTMLEditor, previewFrameHTML) {
-  const value = rawHTMLEditor.state.doc.toString();
-  const cleanedHTML = cleanHTML(value);
-  updateCleanHTML(cleanedHTML, cleanHTMLEditor, previewFrameHTML);
+  try {
+    const html2 = rawHTMLEditor.state.doc.toString();
+    if (html2.trim() === "") {
+      showNotification("raw HTML is empty", "warning");
+      return;
+    }
+    const cleanedHTML = cleanHTML(html2);
+    updateCleanHTML(cleanedHTML, cleanHTMLEditor, previewFrameHTML);
+    showNotification("HTML cleaned up", "success");
+  } catch (error) {
+    showNotification("Faild to clean HTML", "error");
+  }
 }
 async function updateMarkdown(markdown2, markdownEditor, previewFrameMarkdown) {
   setEditorContent(markdownEditor, markdown2);
@@ -33751,14 +33800,17 @@ for (const { id: id2, editor } of copyButtons) {
 }
 getElement("btn-clear-html-raw").addEventListener("click", () => {
   clearEditor(rawHTMLEditor);
+  showNotification("Raw HTML cleared", "success");
 });
 getElement("btn-clear-html-clean").addEventListener("click", () => {
   clearEditor(cleanHTMLEditor);
   updatePreviewHTML("", previewFrameHTML);
+  showNotification("Clean HTML cleared", "success");
 });
 getElement("btn-clear-markdown").addEventListener("click", async () => {
   clearEditor(markdownEditor);
   await updatePreviewMarkdown("", previewFrameMarkdown);
+  showNotification("Markdown cleared", "success");
 });
 var btnToggleTheme = getElement("btn-toggle-theme");
 btnToggleTheme.addEventListener("click", () => {
