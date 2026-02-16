@@ -1,156 +1,91 @@
-import { cleanHTML } from "./cleaner";
-import { compressHTML, formatHTML } from "./formatters";
-import { convertHTMLToMarkdown, convertMarkdownToHTML } from "./markdown";
+import { createHTMLEditor, createMarkdownEditor, clearEditor } from "./editors";
+import { copyToClipboard, toggleTheme, loadTheme, getElement } from "./utils";
 import {
-  createHTMLEditor,
-  setEditorContent,
-  createMarkdownEditor,
-  clearEditor,
-} from "./editors";
-import { copyToClipboard } from "./utils";
+  handleConvertHTMLToMarkdown,
+  handleFormatHTML,
+  handleCompressHTML,
+  handlePurifyRawHTML,
+  updatePreviewHTML,
+  updatePreviewMarkdown,
+} from "./handlers";
 
-const rawHTMLContainer = document.getElementById("editor-raw-html");
-if (!rawHTMLContainer) {
-  throw new Error("Missing container");
-}
-const rawHTMLEditor = createHTMLEditor(rawHTMLContainer);
+// Editors
+const rawHTMLEditor = createHTMLEditor(
+  getElement<HTMLDivElement>("editor-raw-html"),
+);
 
-const cleanHTMLContainer = document.getElementById("editor-clean-html");
-if (!cleanHTMLContainer) {
-  throw new Error("Missing container");
-}
-const cleanHTMLEditor = createHTMLEditor(cleanHTMLContainer, (content) => {
-  updatePreviewHTML(content);
-});
+const cleanHTMLEditor = createHTMLEditor(
+  getElement<HTMLDivElement>("editor-clean-html"),
+  (content) => {
+    updatePreviewHTML(content);
+  },
+);
 
-const markdownContainer = document.getElementById("editor-markdown");
-if (!markdownContainer) {
-  throw new Error("Missing container");
-}
 const markdownEditor = createMarkdownEditor(
-  markdownContainer,
+  getElement<HTMLDivElement>("editor-markdown"),
   async (content) => {
     await updatePreviewMarkdown(content);
   },
 );
 
-const btnClean = document.getElementById("btn-clean");
-btnClean?.addEventListener("click", handlePurifyRawHTML);
-
-const btnMarkdown = document.getElementById("btn-markdown");
-btnMarkdown?.addEventListener("click", handleConvertHTMLToMarkdown);
-
-const btnFormat = document.getElementById("btn-format");
-btnFormat?.addEventListener("click", handleFormatHTML);
-
-const btnCompress = document.getElementById("btn-compress");
-btnCompress?.addEventListener("click", handleCompressHTML);
-
-const btnCopyRawHTML = document.getElementById(
-  "btn-copy-html-raw",
-) as HTMLButtonElement | null;
-btnCopyRawHTML?.addEventListener("click", async () => {
-  const content = rawHTMLEditor.state.doc.toString();
-  await copyToClipboard(content, btnCopyRawHTML);
+// Action buttons
+getElement<HTMLButtonElement>("btn-clean").addEventListener("click", () => {
+  handlePurifyRawHTML(rawHTMLEditor, cleanHTMLEditor);
 });
 
-const btnCopyCleanHTML = document.getElementById(
-  "btn-copy-html-clean",
-) as HTMLButtonElement | null;
-btnCopyCleanHTML?.addEventListener("click", async () => {
-  const content = cleanHTMLEditor.state.doc.toString();
-  await copyToClipboard(content, btnCopyCleanHTML);
+getElement<HTMLButtonElement>("btn-markdown").addEventListener("click", () => {
+  handleConvertHTMLToMarkdown(cleanHTMLEditor, markdownEditor);
 });
 
-const btnCopyCleanMarkdown = document.getElementById(
-  "btn-copy-markdown",
-) as HTMLButtonElement | null;
-btnCopyCleanMarkdown?.addEventListener("click", async () => {
-  const content = markdownEditor.state.doc.toString();
-  await copyToClipboard(content, btnCopyCleanMarkdown);
+getElement<HTMLButtonElement>("btn-format").addEventListener("click", () => {
+  handleFormatHTML(cleanHTMLEditor);
 });
 
-const btnClearRawHTML = document.getElementById("btn-clear-html-raw");
-btnClearRawHTML?.addEventListener("click", () => {
-  clearEditor(rawHTMLEditor);
+getElement<HTMLButtonElement>("btn-compress").addEventListener("click", () => {
+  handleCompressHTML(cleanHTMLEditor);
 });
 
-const btnClearCleanHTML = document.getElementById("btn-clear-html-clean");
-btnClearCleanHTML?.addEventListener("click", () => {
-  clearEditor(cleanHTMLEditor);
-  updatePreviewHTML("");
+// Copy buttons
+const copyButtons = [
+  { id: "btn-copy-html-raw", editor: rawHTMLEditor },
+  { id: "btn-copy-html-clean", editor: cleanHTMLEditor },
+  { id: "btn-copy-markdown", editor: markdownEditor },
+];
+
+for (const { id, editor } of copyButtons) {
+  const btn = getElement<HTMLButtonElement>(id);
+  btn.addEventListener("click", async () => {
+    await copyToClipboard(editor.state.doc.toString(), btn);
+  });
+}
+
+// Clear buttons
+getElement<HTMLButtonElement>("btn-clear-html-raw").addEventListener(
+  "click",
+  () => {
+    clearEditor(rawHTMLEditor);
+  },
+);
+
+getElement<HTMLButtonElement>("btn-clear-html-clean").addEventListener(
+  "click",
+  () => {
+    clearEditor(cleanHTMLEditor);
+    updatePreviewHTML("");
+  },
+);
+
+getElement<HTMLButtonElement>("btn-clear-markdown").addEventListener(
+  "click",
+  async () => {
+    clearEditor(markdownEditor);
+    await updatePreviewMarkdown("");
+  },
+);
+
+// Theme toggle
+const btnToggleTheme = getElement<HTMLButtonElement>("btn-toggle-theme");
+btnToggleTheme.addEventListener("click", () => {
+  toggleTheme(btnToggleTheme);
 });
-
-const btnClearMarkdown = document.getElementById("btn-clear-markdown");
-btnClearMarkdown?.addEventListener("click", async () => {
-  clearEditor(markdownEditor);
-  await updatePreviewMarkdown("");
-});
-
-// themes
-const btnToggleTheme = document.getElementById("btn-toggle-theme");
-btnToggleTheme?.addEventListener("click", () => {
-  document.documentElement.classList.toggle("dark");
-  const isDark = document.documentElement.classList.contains("dark");
-  btnToggleTheme.textContent = isDark ? "Light Mode" : "Dark Mode";
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-});
-
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.documentElement.classList.add("dark");
-  if (btnToggleTheme) btnToggleTheme.textContent = "Light Mode";
-}
-
-// handles
-async function handleConvertHTMLToMarkdown(): Promise<void> {
-  const cleanHTML = cleanHTMLEditor.state.doc.toString();
-  const markdown = convertHTMLToMarkdown(cleanHTML);
-  setEditorContent(markdownEditor, markdown);
-  await updatePreviewMarkdown(markdown);
-}
-
-function handleFormatHTML(): void {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(formatHTML(currentHTML));
-}
-
-function handleCompressHTML(): void {
-  const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(compressHTML(currentHTML));
-}
-
-function handlePurifyRawHTML(): void {
-  const value = rawHTMLEditor.state.doc.toString();
-  const cleanedHTML = cleanHTML(value);
-  updateOutputHTML(cleanedHTML);
-}
-
-// updates
-function updateOutputHTML(htmlString: string): void {
-  setEditorContent(cleanHTMLEditor, htmlString);
-  updatePreviewHTML(htmlString);
-}
-
-function updatePreviewHTML(htmlString: string): void {
-  const previewHTMLFrame = document.getElementById(
-    "iframe-preview-html",
-  ) as HTMLIFrameElement | null;
-  if (!previewHTMLFrame) {
-    console.error("Missing element");
-    return;
-  }
-  previewHTMLFrame.srcdoc = htmlString;
-}
-
-async function updatePreviewMarkdown(markdownString: string): Promise<void> {
-  const previewMarkdownFrame = document.getElementById(
-    "iframe-preview-markdown",
-  ) as HTMLIFrameElement | null;
-  if (!previewMarkdownFrame) {
-    console.error("Missing element");
-    return;
-  }
-  const html = await convertMarkdownToHTML(markdownString);
-  previewMarkdownFrame.srcdoc = html;
-}
+loadTheme(btnToggleTheme);
