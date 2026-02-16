@@ -1,4 +1,9 @@
-import { createHTMLEditor, createMarkdownEditor, clearEditor } from "./editors";
+import {
+  createHTMLEditor,
+  createMarkdownEditor,
+  clearEditor,
+  setEditorContent,
+} from "./editors";
 import { copyToClipboard, toggleTheme, loadTheme, getElement } from "./utils";
 import {
   handleConvertHTMLToMarkdown,
@@ -7,6 +12,8 @@ import {
   handlePurifyRawHTML,
   updatePreviewHTML,
   updatePreviewMarkdown,
+  updateCleanHTML,
+  updateMarkdown,
 } from "./handlers";
 
 // Frames
@@ -19,6 +26,9 @@ const previewFrameMarkdown = getElement<HTMLIFrameElement>(
 // Editors
 const rawHTMLEditor = createHTMLEditor(
   getElement<HTMLDivElement>("editor-raw-html"),
+  (content) => {
+    localStorage.setItem("raw-HTML", content);
+  },
 );
 
 const cleanHTMLEditor = createHTMLEditor(
@@ -34,6 +44,16 @@ const markdownEditor = createMarkdownEditor(
     await updatePreviewMarkdown(content, previewFrameMarkdown);
   },
 );
+
+// local storage editors
+const storageRawHTML = localStorage.getItem("raw-HTML") ?? "";
+setEditorContent(rawHTMLEditor, storageRawHTML);
+
+const storageCleanHTML = localStorage.getItem("clean-HTML") ?? "";
+updateCleanHTML(storageCleanHTML, cleanHTMLEditor, previewFrameHTML);
+
+const storageMarkdown = localStorage.getItem("markdown") ?? "";
+updateMarkdown(storageMarkdown, markdownEditor, previewFrameMarkdown);
 
 // Action buttons
 getElement<HTMLButtonElement>("btn-clean").addEventListener("click", () => {

@@ -64,6 +64,7 @@ export function updatePreviewHTML(
   html: string,
   previewFrameHTML: HTMLIFrameElement,
 ): void {
+  localStorage.setItem("clean-HTML", html);
   previewFrameHTML.srcdoc = html;
 }
 
@@ -71,6 +72,7 @@ export async function updatePreviewMarkdown(
   markdown: string,
   previewFrameMarkdown: HTMLIFrameElement,
 ): Promise<void> {
+  localStorage.setItem("markdown", markdown);
   const html = await convertMarkdownToHTML(markdown);
   previewFrameMarkdown.srcdoc = html;
 }
