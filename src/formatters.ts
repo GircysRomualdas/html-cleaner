@@ -1,33 +1,48 @@
 import { html as beautifyHTML } from "js-beautify";
 
+type ExtractedCodeBlocks = {
+  html: string;
+  codeBlocks: string[];
+};
+
 export function compressHTML(html: string): string {
+  const { html: withoutCode, codeBlocks } = extractCodeBlocks(html);
+
+  const compressed = withoutCode
+    .replace(/\n/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/>\s+</g, "><")
+    .trim();
+
+  return restoreCodeBlocks(compressed, codeBlocks);
+}
+
+function extractCodeBlocks(html: string): ExtractedCodeBlocks {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
 
   const codeBlocks: string[] = [];
   const codeElements = doc.querySelectorAll("pre, code");
-  let i = 0;
-  for (const el of codeElements) {
-    codeBlocks[i] = el.innerHTML;
-    el.innerHTML = `__CODE_BLOCK_${i}__`;
-    i++;
-  }
 
-  const regexRemoveLineBreaks = /\n/g;
-  const regexCollapseSpaces = /\s{2,}/g;
-  const regexRemoveSpacesBetweenTags = />\s+</g;
+  codeElements.forEach((el, index) => {
+    codeBlocks[index] = el.innerHTML;
+    el.innerHTML = `__CODE_BLOCK_${index}__`;
+  });
 
-  let compressed = doc.body.innerHTML
-    .replace(regexRemoveLineBreaks, "")
-    .replace(regexCollapseSpaces, " ")
-    .replace(regexRemoveSpacesBetweenTags, "><")
-    .trim();
+  return {
+    html: doc.body.innerHTML,
+    codeBlocks,
+  };
+}
 
-  for (let j = 0; j < codeBlocks.length; j++) {
-    compressed = compressed.replace(`__CODE_BLOCK_${j}__`, codeBlocks[j] ?? "");
-  }
+function restoreCodeBlocks(html: string, codeBlocks: string[]): string {
+  let restored = html;
 
-  return compressed;
+  codeBlocks.forEach((code, index) => {
+    restored = restored.replace(`__CODE_BLOCK_${index}__`, code ?? "");
+  });
+
+  return restored;
 }
 
 export function formatHTML(html: string): string {

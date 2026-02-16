@@ -7,62 +7,70 @@ import { cleanHTML } from "./cleaner";
 export async function handleConvertHTMLToMarkdown(
   cleanHTMLEditor: EditorView,
   markdownEditor: EditorView,
+  previewFrameMarkdown: HTMLIFrameElement,
 ): Promise<void> {
   const cleanHTML = cleanHTMLEditor.state.doc.toString();
   const markdown = convertHTMLToMarkdown(cleanHTML);
-  setEditorContent(markdownEditor, markdown);
-  await updatePreviewMarkdown(markdown);
+
+  await updateMarkdown(markdown, markdownEditor, previewFrameMarkdown);
 }
 
-export function handleFormatHTML(cleanHTMLEditor: EditorView): void {
+export function handleFormatHTML(
+  cleanHTMLEditor: EditorView,
+  previewFrameHTML: HTMLIFrameElement,
+): void {
   const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(formatHTML(currentHTML), cleanHTMLEditor);
+  updateCleanHTML(formatHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
 }
 
-export function handleCompressHTML(cleanHTMLEditor: EditorView): void {
+export function handleCompressHTML(
+  cleanHTMLEditor: EditorView,
+  previewFrameHTML: HTMLIFrameElement,
+): void {
   const currentHTML = cleanHTMLEditor.state.doc.toString();
-  updateOutputHTML(compressHTML(currentHTML), cleanHTMLEditor);
+  updateCleanHTML(compressHTML(currentHTML), cleanHTMLEditor, previewFrameHTML);
 }
 
 export function handlePurifyRawHTML(
   rawHTMLEditor: EditorView,
   cleanHTMLEditor: EditorView,
+  previewFrameHTML: HTMLIFrameElement,
 ): void {
   const value = rawHTMLEditor.state.doc.toString();
   const cleanedHTML = cleanHTML(value);
-  updateOutputHTML(cleanedHTML, cleanHTMLEditor);
+  updateCleanHTML(cleanedHTML, cleanHTMLEditor, previewFrameHTML);
 }
 
 // updates
-function updateOutputHTML(
-  htmlString: string,
-  cleanHTMLEditor: EditorView,
-): void {
-  setEditorContent(cleanHTMLEditor, htmlString);
-  updatePreviewHTML(htmlString);
+export async function updateMarkdown(
+  markdown: string,
+  markdownEditor: EditorView,
+  previewFrameMarkdown: HTMLIFrameElement,
+): Promise<void> {
+  setEditorContent(markdownEditor, markdown);
+  await updatePreviewMarkdown(markdown, previewFrameMarkdown);
 }
 
-export function updatePreviewHTML(htmlString: string): void {
-  const previewHTMLFrame = document.getElementById(
-    "iframe-preview-html",
-  ) as HTMLIFrameElement | null;
-  if (!previewHTMLFrame) {
-    console.error("Missing element");
-    return;
-  }
-  previewHTMLFrame.srcdoc = htmlString;
+export function updateCleanHTML(
+  html: string,
+  cleanHTMLEditor: EditorView,
+  previewFrameHTML: HTMLIFrameElement,
+): void {
+  setEditorContent(cleanHTMLEditor, html);
+  updatePreviewHTML(html, previewFrameHTML);
+}
+
+export function updatePreviewHTML(
+  html: string,
+  previewFrameHTML: HTMLIFrameElement,
+): void {
+  previewFrameHTML.srcdoc = html;
 }
 
 export async function updatePreviewMarkdown(
-  markdownString: string,
+  markdown: string,
+  previewFrameMarkdown: HTMLIFrameElement,
 ): Promise<void> {
-  const previewMarkdownFrame = document.getElementById(
-    "iframe-preview-markdown",
-  ) as HTMLIFrameElement | null;
-  if (!previewMarkdownFrame) {
-    console.error("Missing element");
-    return;
-  }
-  const html = await convertMarkdownToHTML(markdownString);
-  previewMarkdownFrame.srcdoc = html;
+  const html = await convertMarkdownToHTML(markdown);
+  previewFrameMarkdown.srcdoc = html;
 }

@@ -9,6 +9,13 @@ import {
   updatePreviewMarkdown,
 } from "./handlers";
 
+// Frames
+const previewFrameHTML = getElement<HTMLIFrameElement>("iframe-preview-html");
+
+const previewFrameMarkdown = getElement<HTMLIFrameElement>(
+  "iframe-preview-markdown",
+);
+
 // Editors
 const rawHTMLEditor = createHTMLEditor(
   getElement<HTMLDivElement>("editor-raw-html"),
@@ -17,32 +24,36 @@ const rawHTMLEditor = createHTMLEditor(
 const cleanHTMLEditor = createHTMLEditor(
   getElement<HTMLDivElement>("editor-clean-html"),
   (content) => {
-    updatePreviewHTML(content);
+    updatePreviewHTML(content, previewFrameHTML);
   },
 );
 
 const markdownEditor = createMarkdownEditor(
   getElement<HTMLDivElement>("editor-markdown"),
   async (content) => {
-    await updatePreviewMarkdown(content);
+    await updatePreviewMarkdown(content, previewFrameMarkdown);
   },
 );
 
 // Action buttons
 getElement<HTMLButtonElement>("btn-clean").addEventListener("click", () => {
-  handlePurifyRawHTML(rawHTMLEditor, cleanHTMLEditor);
+  handlePurifyRawHTML(rawHTMLEditor, cleanHTMLEditor, previewFrameHTML);
 });
 
 getElement<HTMLButtonElement>("btn-markdown").addEventListener("click", () => {
-  handleConvertHTMLToMarkdown(cleanHTMLEditor, markdownEditor);
+  handleConvertHTMLToMarkdown(
+    cleanHTMLEditor,
+    markdownEditor,
+    previewFrameMarkdown,
+  );
 });
 
 getElement<HTMLButtonElement>("btn-format").addEventListener("click", () => {
-  handleFormatHTML(cleanHTMLEditor);
+  handleFormatHTML(cleanHTMLEditor, previewFrameHTML);
 });
 
 getElement<HTMLButtonElement>("btn-compress").addEventListener("click", () => {
-  handleCompressHTML(cleanHTMLEditor);
+  handleCompressHTML(cleanHTMLEditor, previewFrameHTML);
 });
 
 // Copy buttons
@@ -71,7 +82,7 @@ getElement<HTMLButtonElement>("btn-clear-html-clean").addEventListener(
   "click",
   () => {
     clearEditor(cleanHTMLEditor);
-    updatePreviewHTML("");
+    updatePreviewHTML("", previewFrameHTML);
   },
 );
 
@@ -79,7 +90,7 @@ getElement<HTMLButtonElement>("btn-clear-markdown").addEventListener(
   "click",
   async () => {
     clearEditor(markdownEditor);
-    await updatePreviewMarkdown("");
+    await updatePreviewMarkdown("", previewFrameMarkdown);
   },
 );
 
