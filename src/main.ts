@@ -4,7 +4,13 @@ import {
   clearEditor,
   setEditorContent,
 } from "./editors";
-import { copyToClipboard, toggleTheme, loadTheme, getElement } from "./utils";
+import {
+  copyToClipboard,
+  toggleTheme,
+  loadTheme,
+  getElement,
+  showNotification,
+} from "./utils";
 import {
   handleConvertHTMLToMarkdown,
   handleFormatHTML,
@@ -95,6 +101,7 @@ getElement<HTMLButtonElement>("btn-clear-html-raw").addEventListener(
   "click",
   () => {
     clearEditor(rawHTMLEditor);
+    showNotification("Raw HTML cleared", "success");
   },
 );
 
@@ -103,6 +110,7 @@ getElement<HTMLButtonElement>("btn-clear-html-clean").addEventListener(
   () => {
     clearEditor(cleanHTMLEditor);
     updatePreviewHTML("", previewFrameHTML);
+    showNotification("Clean HTML cleared", "success");
   },
 );
 
@@ -111,6 +119,7 @@ getElement<HTMLButtonElement>("btn-clear-markdown").addEventListener(
   async () => {
     clearEditor(markdownEditor);
     await updatePreviewMarkdown("", previewFrameMarkdown);
+    showNotification("Markdown cleared", "success");
   },
 );
 
