@@ -33581,8 +33581,131 @@ var Jt = g.parseInline;
 var Yt = b.parse;
 var en = x.lex;
 
+// node_modules/turndown-plugin-gfm/lib/turndown-plugin-gfm.es.js
+var highlightRegExp = /highlight-(?:text|source)-([a-z0-9]+)/;
+function highlightedCodeBlock(turndownService) {
+  turndownService.addRule("highlightedCodeBlock", {
+    filter: function(node) {
+      var firstChild = node.firstChild;
+      return node.nodeName === "DIV" && highlightRegExp.test(node.className) && firstChild && firstChild.nodeName === "PRE";
+    },
+    replacement: function(content2, node, options) {
+      var className = node.className || "";
+      var language2 = (className.match(highlightRegExp) || [null, ""])[1];
+      return `
+
+` + options.fence + language2 + `
+` + node.firstChild.textContent + `
+` + options.fence + `
+
+`;
+    }
+  });
+}
+function strikethrough(turndownService) {
+  turndownService.addRule("strikethrough", {
+    filter: ["del", "s", "strike"],
+    replacement: function(content2) {
+      return "~" + content2 + "~";
+    }
+  });
+}
+var indexOf = Array.prototype.indexOf;
+var every = Array.prototype.every;
+var rules2 = {};
+rules2.tableCell = {
+  filter: ["th", "td"],
+  replacement: function(content2, node) {
+    return cell(content2, node);
+  }
+};
+rules2.tableRow = {
+  filter: "tr",
+  replacement: function(content2, node) {
+    var borderCells = "";
+    var alignMap = { left: ":--", right: "--:", center: ":-:" };
+    if (isHeadingRow(node)) {
+      for (var i2 = 0;i2 < node.childNodes.length; i2++) {
+        var border = "---";
+        var align = (node.childNodes[i2].getAttribute("align") || "").toLowerCase();
+        if (align)
+          border = alignMap[align] || border;
+        borderCells += cell(border, node.childNodes[i2]);
+      }
+    }
+    return `
+` + content2 + (borderCells ? `
+` + borderCells : "");
+  }
+};
+rules2.table = {
+  filter: function(node) {
+    return node.nodeName === "TABLE" && isHeadingRow(node.rows[0]);
+  },
+  replacement: function(content2) {
+    content2 = content2.replace(`
+
+`, `
+`);
+    return `
+
+` + content2 + `
+
+`;
+  }
+};
+rules2.tableSection = {
+  filter: ["thead", "tbody", "tfoot"],
+  replacement: function(content2) {
+    return content2;
+  }
+};
+function isHeadingRow(tr) {
+  var parentNode = tr.parentNode;
+  return parentNode.nodeName === "THEAD" || parentNode.firstChild === tr && (parentNode.nodeName === "TABLE" || isFirstTbody(parentNode)) && every.call(tr.childNodes, function(n) {
+    return n.nodeName === "TH";
+  });
+}
+function isFirstTbody(element) {
+  var previousSibling = element.previousSibling;
+  return element.nodeName === "TBODY" && (!previousSibling || previousSibling.nodeName === "THEAD" && /^\s*$/i.test(previousSibling.textContent));
+}
+function cell(content2, node) {
+  var index = indexOf.call(node.parentNode.childNodes, node);
+  var prefix = " ";
+  if (index === 0)
+    prefix = "| ";
+  return prefix + content2 + " |";
+}
+function tables(turndownService) {
+  turndownService.keep(function(node) {
+    return node.nodeName === "TABLE" && !isHeadingRow(node.rows[0]);
+  });
+  for (var key in rules2)
+    turndownService.addRule(key, rules2[key]);
+}
+function taskListItems(turndownService) {
+  turndownService.addRule("taskListItems", {
+    filter: function(node) {
+      return node.type === "checkbox" && node.parentNode.nodeName === "LI";
+    },
+    replacement: function(content2, node) {
+      return (node.checked ? "[x]" : "[ ]") + " ";
+    }
+  });
+}
+function gfm(turndownService) {
+  turndownService.use([
+    highlightedCodeBlock,
+    strikethrough,
+    tables,
+    taskListItems
+  ]);
+}
+
 // src/markdown.ts
 var turndownService = new turndown_browser_es_default;
+turndownService.use(gfm);
 function convertHTMLToMarkdown(html2) {
   return turndownService.turndown(html2);
 }
