@@ -33706,6 +33706,24 @@ function gfm(turndownService) {
 // src/markdown.ts
 var turndownService = new turndown_browser_es_default;
 turndownService.use(gfm);
+turndownService.addRule("inlineCode", {
+  filter: (node) => node.nodeName === "CODE" && node.parentNode?.nodeName !== "PRE",
+  replacement: (content2) => "`" + content2 + "`"
+});
+turndownService.addRule("fencedCodeBlock", {
+  filter: (node) => node.nodeName === "PRE" && node.querySelector("code"),
+  replacement: (content2, node) => {
+    const codeNode = node.querySelector("code");
+    let raw = codeNode.textContent || "";
+    raw = raw.replace(/\r\n/g, `
+`).trim();
+    if (!raw)
+      return "";
+    return `\`\`\`
+${raw}
+\`\`\``;
+  }
+});
 function convertHTMLToMarkdown(html2) {
   return turndownService.turndown(html2);
 }
