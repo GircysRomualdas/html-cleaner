@@ -87,7 +87,7 @@ header h1 {
 
 .code-editor {
   flex: 1;
-  border: 3px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
   display: flex;
@@ -110,7 +110,7 @@ header h1 {
 iframe {
   flex: 1;
   width: 100%;
-  border: 3px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 12px;
   overflow: auto;
@@ -153,6 +153,20 @@ button:hover {
 .preview h2 {
   text-align: left;
   margin: 0;
+}
+
+.btn-copy {
+  background-color: #68ab55;
+}
+.btn-copy:hover {
+  background: #488636;
+}
+
+.btn-clear {
+  background-color: #ab5655;
+}
+.btn-clear:hover {
+  background: #884443;
 }
 
 @media (max-width: 1200px) {
