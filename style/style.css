@@ -1,6 +1,6 @@
 :root {
-  --bg-primary: #ececec;
-  --bg-secondary: #ffffff;
+  --bg-primary: #d3d3d3;
+  --bg-secondary: #e0e0e0;
   --bg-accent: #9fd3c7;
   --text-primary: #142d4c;
   --text-secondary: #385170;
@@ -12,8 +12,8 @@
 }
 
 :root.dark {
-  --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
+  --bg-primary: #373737;
+  --bg-secondary: #3f3f3f;
   --bg-accent: #2d2d2d;
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
@@ -123,12 +123,13 @@ iframe {
   gap: 5px;
   flex-wrap: wrap;
   justify-content: center;
+  margin: 4px;
 }
 
 button {
   background: var(--btn-bg);
   color: var(--btn-text);
-  padding: 8px 16px;
+  padding: 8px 8px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
